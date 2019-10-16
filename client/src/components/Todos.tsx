@@ -11,7 +11,9 @@ import {
   Icon,
   Input,
   Image,
-  Loader
+  Loader,
+  Segment,
+  Container
 } from 'semantic-ui-react'
 
 import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
@@ -104,7 +106,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Monogram</Header>
 
         {this.renderCreateTodoInput()}
 
@@ -158,50 +160,39 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
 
   renderTodosList() {
     return (
-      <Grid padded>
-        {this.state.todos.map((todo, pos) => {
-          return (
-            <Grid.Row key={todo.todoId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
-                />
-              </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
-              </Grid.Column>
-              <Grid.Column width={3} floated="right">
-                {todo.dueDate}
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
-                >
-                  <Icon name="pencil" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
-                >
-                  <Icon name="delete" />
-                </Button>
-              </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
-              )}
-              <Grid.Column width={16}>
-                <Divider />
-              </Grid.Column>
-            </Grid.Row>
-          )
-        })}
-      </Grid>
+      <Container>
+        <Grid>
+          {this.state.todos.map((todo, pos) => {
+            return (
+              <Grid.Row centered={true} key={todo.todoId}>
+                <Grid.Column width={5}>
+                  <Segment>
+                    <Image src={todo.attachmentUrl} />
+                  </Segment>
+                </Grid.Column>
+                <Grid.Column width={3}>
+                  <Segment>
+                    {todo.name}
+                  </Segment>
+                  <Segment></Segment>
+                </Grid.Column>
+                <Grid.Column width={2}>
+                  <Segment>
+                    <Button icon color="blue" onClick={() => this.onEditButtonClick(todo.todoId)} >
+                      <Icon name="pencil" />
+                    </Button>
+                  </Segment>
+                  <Segment>
+                    <Button icon color="red" onClick={() => this.onTodoDelete(todo.todoId)}>
+                      <Icon name="delete" />  
+                    </Button>
+                  </Segment>
+                </Grid.Column>
+              </Grid.Row>              
+            )
+          })}
+        </Grid>
+      </Container>
     )
   }
 
