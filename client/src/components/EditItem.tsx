@@ -1,33 +1,38 @@
 import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile } from '../api/todos-api'
+import { getUploadUrl, uploadFile } from '../api/items-api'
+import { string } from 'prop-types'
 
-enum UploadState {
+export enum UploadState {
   NoUpload,
   FetchingPresignedUrl,
   UploadingFile,
 }
 
-interface EditTodoProps {
+interface EditItemProps {
   match: {
     params: {
-      todoId: string
+      itemId: string
     }
   }
   auth: Auth
 }
 
-interface EditTodoState {
+interface EditItemState {
+  title: string
+  desc: string
   file: any
   uploadState: UploadState
 }
 
-export class EditTodo extends React.PureComponent<
-  EditTodoProps,
-  EditTodoState
+export class EditItem extends React.PureComponent<
+EditItemProps,
+EditItemState
 > {
-  state: EditTodoState = {
+  state: EditItemState = {
+    title: '',
+    desc: '',
     file: undefined,
     uploadState: UploadState.NoUpload
   }
@@ -41,17 +46,37 @@ export class EditTodo extends React.PureComponent<
     })
   }
 
+  handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const _title = event.target.textContent
+    if (!_title) return
+
+    this.setState({
+      title: _title
+    })
+  }
+  
+  handleDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const _desc = event.target.textContent
+    if (!_desc) return
+
+    this.setState({
+      desc: _desc
+    })
+  }
+
   handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     try {
+
+      // only check the file
       if (!this.state.file) {
         alert('File should be selected')
         return
       }
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
-      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.todoId)
+      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.itemId)
 
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(uploadUrl, this.state.file)
@@ -76,6 +101,22 @@ export class EditTodo extends React.PureComponent<
         <h1>Upload new image</h1>
 
         <Form onSubmit={this.handleSubmit}>
+        <Form.Field>
+            <label>Title</label>
+            <input
+              type="text"
+              placeholder="Enter Title..."
+              onChange={this.handleTitleChange}
+            />
+          </Form.Field>
+          <Form.Field>
+            <label>Desc</label>
+            <input
+              type="text"
+              placeholder="Enter Description..."
+              onChange={this.handleDescChange}
+            />
+          </Form.Field>
           <Form.Field>
             <label>File</label>
             <input
