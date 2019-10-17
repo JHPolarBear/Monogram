@@ -17,7 +17,7 @@ import {
   Container
 } from 'semantic-ui-react'
 
-import { createItem, deleteItem, getItems, patchItem, getUploadUrl, uploadFile } from '../api/items-api'
+import { createItem, deleteItem, getItems, patchItem, getUploadUrl, uploadFile, filterImage } from '../api/items-api'
 import Auth from '../auth/Auth'
 import { Item } from '../types/Item'
 import {UploadState} from '../components/EditItem'
@@ -76,19 +76,23 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
   onItemCreate = async (event: React.SyntheticEvent) => {
     try {
+      console.log('image:', this.state.newItemImage)
+
       const newItem = await createItem(this.props.auth.getIdToken(), {
         title: this.state.newItemTitle,
-        desc: this.state.newItemDesc,
-        file: this.state.newItemImage,
+        desc: this.state.newItemDesc
       })
 
       if(newItem)
       {
+        const filteredImage = await filterImage(this.state.newItemImage)
+
         this.setUploadState(UploadState.FetchingPresignedUrl)
         const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), newItem.itemId)
 
         this.setUploadState(UploadState.UploadingFile)
-        await uploadFile(uploadUrl, this.state.newItemImage)
+        //await uploadFile(uploadUrl, this.state.newItemImage)
+        await uploadFile(uploadUrl, filteredImage)
       }
 
       this.setState({
@@ -223,6 +227,10 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
                   </Segment>
                   <Segment>
                     {item.desc}
+                  </Segment>
+                  <Segment>
+                    last modified<br></br>
+                    {item.createdAt}
                   </Segment>
                 </Grid.Column>
                 <Grid.Column width={3}>
