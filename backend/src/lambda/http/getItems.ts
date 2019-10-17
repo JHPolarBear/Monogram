@@ -1,6 +1,6 @@
 import 'source-map-support/register'
 
-import {getAllTodos} from '../../businessLogic/todos'
+import {getAllItems} from '../../businessLogic/Items'
 
 import { createLogger } from '../../utils/logger'
 
@@ -12,11 +12,11 @@ import * as awsServerlessExpress from 'aws-serverless-express'
 // get express class
 const app = express()
 
-const logger = createLogger('getTodos')
+const logger = createLogger('getItems')
 
-//request get todos
-app.get('/todos', async(_req, res) => {
-  //get all todo items
+//request get Items
+app.get('/items', async(_req, res) => {
+  //get all items
 
   const headers = _req.headers
   const authorization = headers.authorization
@@ -26,16 +26,16 @@ app.get('/todos', async(_req, res) => {
 
   const userId = parseUserId(jwtToken)
 
-  const todos = await getAllTodos(userId)
+  const Items = await getAllItems(userId)
 
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   res.json({
-    items: todos
+    items: Items
   })
 })
 
-logger.info("start request get todos")
+logger.info("start request get Items")
 
 const server = awsServerlessExpress.createServer(app)
 

@@ -4,9 +4,9 @@ import 'source-map-support/register'
 
 import * as AWS from 'aws-sdk'
 
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
+import { UpdateItemRequest } from '../../requests/UpdateItemRequest'
 
-import {updateTodo} from '../../businessLogic/todos'
+import {updateItem} from '../../businessLogic/Items'
 import { createLogger } from '../../utils/logger'
 import { parseUserId } from '../../auth/utils'
 
@@ -21,16 +21,16 @@ app.use(express.json())
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-const logger = createLogger('updateTodo')
+const logger = createLogger('updateItem')
 
-const todosTable = process.env.TODOS_TABLE
+const itemTable = process.env.MONOGRAM_ITEMS_TABLE
 
-//request get todos
-app.put('/todos/:todoId', async(_req, res) => {
-  //post all todo items
+//request get Items
+app.put('/items/:itemId', async(_req, res) => {
+  //post all items
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const todoID = _req.params.todoId
+  const itemId = _req.params.itemId
 
   const headers = _req.headers
   const authorization = headers.authorization
@@ -42,17 +42,17 @@ app.put('/todos/:todoId', async(_req, res) => {
   
   try{
     //Check is item exists
-    const validItem =  await todoExists(userId, todoID)
+    const validItem =  await itemExists(userId, itemId)
 
     if(!validItem)
-        throw new Error('todo item not exists')
+        throw new Error('item not exists')
 
-    var newItem: UpdateTodoRequest= _req.body
+    var newItem: UpdateItemRequest= _req.body
 
-    const todos = await updateTodo(userId, todoID, newItem)
+    const Items = await updateItem(userId, itemId, newItem)
 
     res.json({
-      items: todos
+      items: Items
     })
   }
   catch(e)
@@ -67,14 +67,14 @@ const server = awsServerlessExpress.createServer(app)
 
 exports.handler = (event, context) => {awsServerlessExpress.proxy(server, event, context)}
 
-async function todoExists(userId:string, todoID:string)
+async function itemExists(userId:string, itemId:string)
 {
     const result = await docClient
     .get({
-        TableName: todosTable,
+        TableName: itemTable,
         Key: {
         userId: userId,
-        todoId: todoID
+        itemId: itemId
         }
     })
     .promise()

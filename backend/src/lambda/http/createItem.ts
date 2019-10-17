@@ -1,12 +1,12 @@
 import 'source-map-support/register'
 
-import {createTodo} from '../../businessLogic/todos'
+import {createItem} from '../../businessLogic/items'
 import { createLogger } from '../../utils/logger'
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
+import { CreateItemRequest } from '../../requests/CreateItemRequest'
 
 import * as express from 'express'
 import * as awsServerlessExpress from 'aws-serverless-express'
-import { TodoItem } from '../../models/TodoItem'
+import { Item } from '../../models/Item'
 
 // get express class
 const app = express()
@@ -14,11 +14,11 @@ const app = express()
 // import body parser
 app.use(express.json())
 
-const logger = createLogger('createTodos')
+const logger = createLogger('createItems')
 
-//request get todos
-app.post('/todos', async(_req, res) => {
-  //post all todo items
+//request get items
+app.post('/items', async(_req, res) => {
+  //post all items
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   const headers = _req.headers
@@ -28,12 +28,12 @@ app.post('/todos', async(_req, res) => {
   const jwtToken = split[1]
 
   try{
-    var newItem: CreateTodoRequest= _req.body
+    var newItem: CreateItemRequest= _req.body
 
-    const todos: TodoItem = await createTodo(newItem, jwtToken)
+    const items: Item = await createItem(newItem, jwtToken)
 
     res.json({
-      item: todos
+      item: items
     })
   }
   catch(e)

@@ -8,25 +8,25 @@ const s3 = new AWS.S3({
   signatureVersion: 'v4'
 })
 
-import { TodoItem } from '../models/TodoItem'
-import { TodoUpdate } from '../models/TodoUpdate'
+import { Item } from '../models/Item'
+import { ItemUpdate } from '../models/ItemUpdate'
 
-export class TodoAccess {
+export class ItemAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly todosImageBucket = process.env.TODOS_IMAGES_S3_BUCKET) {
+    private readonly ItemsTable = process.env.MONOGRAM_ITEMS_TABLE,
+    private readonly ItemsImageBucket = process.env.MONOGRAM_ITEMS_IMAGES_S3_BUCKET) {
     }
     
 
-  async getAllTodos(userId: string): Promise<TodoItem[]> {
-    console.log('Getting all todos')
+  async getAllItems(userId: string): Promise<Item[]> {
+    console.log('Getting all Items')
 
     console.log('userId:', userId)
 
     const result = await this.docClient.query({
-      TableName: this.todosTable,
+      TableName: this.ItemsTable,
       KeyConditionExpression: 'userId = :u',
       ExpressionAttributeValues:
       {
@@ -35,55 +35,52 @@ export class TodoAccess {
     }).promise()
 
     const items = result.Items
-    return items as TodoItem[]
+    return items as Item[]
   }
 
-  async createTodo(todo: TodoItem): Promise<TodoItem> {
+  async createItem(item: Item): Promise<Item> {
     await this.docClient.put({
-      TableName: this.todosTable,
-      Item: todo
+      TableName: this.ItemsTable,
+      Item: item
     }).promise()
 
-    return todo
+    return item
   }
 
-  async updateTodo(userId:string , todoId: string, todo: TodoUpdate): Promise<TodoUpdate> {
+  async updateItem(userId:string , ItemId: string, item: ItemUpdate): Promise<ItemUpdate> {
     await this.docClient.update({
-      TableName: this.todosTable,
+      TableName: this.ItemsTable,
       Key: {
         "userId": userId,
-        "todoId": todoId
+        "ItemId": ItemId
       },
-      UpdateExpression: "set dueDate=:dd, done=:d, #name=:n",
+      UpdateExpression: "set title=:t, desc=:d, modifiedAt=:m",
       ExpressionAttributeValues:{
-        ":dd": todo.dueDate,
-        ":d": todo.done,
-        ":n": todo.name
-      },
-      ExpressionAttributeNames:{
-        "#name": "name"
+        ":t": item.title,
+        ":d": item.desc,
+        ":m": item.modifiedAt
       }
     }).promise()
 
-    return todo
+    return item
   }
 
-  async deleteTodo(userId:string , todoId: string){
+  async deleteItem(userId:string , itemId: string){
     await this.docClient.delete({
-      TableName: this.todosTable,
+      TableName: this.ItemsTable,
       Key: {
         "userId": userId,
-        "todoId": todoId
+        "itemId": itemId
       }
     }).promise().then(result => {
       console.log("result: ", JSON.stringify(result))
     })
   }  
 
-  async getUploadUrl(todoId:string){
+  async getUploadUrl(itemId:string){
     return await s3.getSignedUrl('putObject', {
-      Bucket: this.todosImageBucket,
-      Key: todoId,
+      Bucket: this.ItemsImageBucket,
+      Key: itemId,
       Expires: 300
     })
   }

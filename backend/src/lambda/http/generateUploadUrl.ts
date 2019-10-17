@@ -4,13 +4,13 @@ import 'source-map-support/register'
 
 import * as AWS from 'aws-sdk'
 
-import {getUploadUrl} from '../../businessLogic/todos'
+import {getUploadUrl} from '../../businessLogic/Items'
 import { createLogger } from '../../utils/logger'
 import { parseUserId } from '../../auth/utils'
 
 import * as express from 'express'
 import * as awsServerlessExpress from 'aws-serverless-express'
-import { TodoItem } from '../../models/TodoItem'
+import { Item } from '../../models/Item'
 
 // get express class
 const app = express()
@@ -20,16 +20,16 @@ app.use(express.json())
 
 const docClient = new AWS.DynamoDB.DocumentClient()
 
-const logger = createLogger('deleteTodo')
+const logger = createLogger('generateUploadUrl')
 
-const todosTable = process.env.TODOS_TABLE
+const ItemsTable = process.env.MONOGRAM_ITEMS_TABLE
 
-//request get todos
-app.post('/todos/:todoId/attachment', async(_req, res) => {
-  //post all todo items
+//request get Items
+app.post('/items/:itemId/attachment', async(_req, res) => {
+  //post all items
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const todoID = _req.params.todoId
+  const itemId = _req.params.itemId
 
   const headers = _req.headers
   const authorization = headers.authorization
@@ -41,12 +41,12 @@ app.post('/todos/:todoId/attachment', async(_req, res) => {
   
   try{
     //Check is item exists
-    const validItem =  await todoExists(userId, todoID) as TodoItem
+    const validItem =  await itemExists(userId, itemId) as Item
 
     if(!validItem)
-        throw new Error('todo item not exists')
+        throw new Error('item not exists')
 
-    const url = await getUploadUrl(todoID)
+    const url = await getUploadUrl(itemId)
 
     res.json({
       uploadUrl: url
@@ -64,26 +64,17 @@ const server = awsServerlessExpress.createServer(app)
 
 exports.handler = (event, context) => {awsServerlessExpress.proxy(server, event, context)}
 
-async function todoExists(userId:string, todoID:string): Promise<TodoItem>
+async function itemExists(userId:string, itemId:string): Promise<Item>
 {
     const result = await docClient
     .get({
-        TableName: todosTable,
+        TableName: ItemsTable,
         Key: {
         userId: userId,
-        todoId: todoID
+        itemId: itemId
         }
     })
     .promise()
 
-    return result.Item as TodoItem
+    return result.Item as Item
 }
-
-// import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-
-// export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-//   const todoId = event.pathParameters.todoId
-
-//   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-//   return undefined
-// }
