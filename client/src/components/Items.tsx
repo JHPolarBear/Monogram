@@ -31,7 +31,7 @@ interface ItemsState {
   items: Item[]
   newItemTitle: string
   newItemDesc: string
-  newItemImage: any
+  newItemImage: string
   loadingItems: boolean
 
   //image upload state
@@ -43,7 +43,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     items: [],
     newItemTitle: '',
     newItemDesc: '',
-    newItemImage: undefined,
+    newItemImage: '',
     loadingItems: true,
 
     uploadState: UploadState.NoUpload
@@ -58,11 +58,12 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
+    const files = event.target.value
+    console.log('file name', event.target.value)
     if (!files) return
 
     this.setState({
-      newItemImage: files[0]
+      newItemImage: event.target.value
     })
   }  
 
@@ -99,7 +100,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         items: [...this.state.items, newItem],
         newItemTitle: '',
         newItemDesc: '',
-        newItemImage: undefined,
+        newItemImage: '',
         uploadState: UploadState.NoUpload
       })
 
@@ -174,6 +175,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
               <input
                 type="file"
                 accept="image/*"
+                name="filePath"
                 placeholder="Image to upload"
                 onChange={this.handleFileChange}
               />
