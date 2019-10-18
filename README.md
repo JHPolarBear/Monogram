@@ -165,9 +165,9 @@ This application use several AWS Services below.
 - CloudWatch
 - lambda
 
-Captured images of each services overview are saved at /AWS_Component Folder
+Captured images of each services overview are saved at [a relative link](/repo/images/AWS_Component/)
 
-AWS service capture 
+
 
 
 
