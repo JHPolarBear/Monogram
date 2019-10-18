@@ -4,6 +4,7 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -36,6 +37,18 @@ provider:
         - s3:GetObject
       Resource: arn:aws:s3:::${self:provider.environment.MONOGRAM_ITEMS_IMAGES_S3_BUCKET}/*
 
+custom:
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Monogram API
+        description: Serverless application for images sharing
+    models:
+      - name: ItemRequest
+        contentType: "application/json"
+        schema: ${file(models/create-item-request.json)}
+
 functions:
 
   Auth:
@@ -58,6 +71,7 @@ functions:
           path: items
           cors: true
           authorizer: Auth
+          reqValidatorName: 'RequestValidator'
 
   UpdateItem:
     handler: src/lambda/http/updateItem.handler
@@ -175,3 +189,12 @@ resources:
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.MONOGRAM_ITEMS_IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
+
+    RequestValidator:
+      Type: "AWS::ApiGateway::RequestValidator"
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId: 
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false  

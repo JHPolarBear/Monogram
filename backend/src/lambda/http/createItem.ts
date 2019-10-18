@@ -37,7 +37,7 @@ app.post('/items', async(_req, res) => {
     })
   }
   catch(e)
-  {
+  {    
     logger.error("post created fail", {error: e.message})
   }
 

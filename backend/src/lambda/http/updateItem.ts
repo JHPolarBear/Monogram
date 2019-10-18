@@ -1,7 +1,5 @@
 import 'source-map-support/register'
 
-//import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-
 import * as AWS from 'aws-sdk'
 
 import { UpdateItemRequest } from '../../requests/UpdateItemRequest'
@@ -12,6 +10,8 @@ import { parseUserId } from '../../auth/utils'
 
 import * as express from 'express'
 import * as awsServerlessExpress from 'aws-serverless-express'
+
+import { Item } from '../../models/Item'
 
 // get express class
 const app = express()
@@ -29,6 +29,8 @@ const itemTable = process.env.MONOGRAM_ITEMS_TABLE
 app.put('/items/:itemId', async(_req, res) => {
   //post all items
   res.setHeader('Access-Control-Allow-Origin', '*');
+
+  logger.info('start update item:', {itemid: _req.params.itemId})
 
   const itemId = _req.params.itemId
 
@@ -48,6 +50,15 @@ app.put('/items/:itemId', async(_req, res) => {
         throw new Error('item not exists')
 
     var newItem: UpdateItemRequest= _req.body
+
+    if(newItem.title == '')
+    {
+      newItem.title = validItem.title
+    }
+
+    if(newItem.desc == ''){
+      newItem.desc = validItem.desc
+    }
 
     const Items = await updateItem(userId, itemId, newItem)
 
@@ -79,5 +90,5 @@ async function itemExists(userId:string, itemId:string)
     })
     .promise()
 
-    return !!result.Item
+    return result.Item as Item
 }

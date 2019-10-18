@@ -52,15 +52,21 @@ export class ItemAccess {
       TableName: this.ItemsTable,
       Key: {
         "userId": userId,
-        "ItemId": ItemId
+        "itemId": ItemId
       },
-      UpdateExpression: "set title=:t, desc=:d, modifiedAt=:m",
+      UpdateExpression: "set title=:t, #desc=:d, modifiedAt=:m",
       ExpressionAttributeValues:{
         ":t": item.title,
         ":d": item.desc,
         ":m": item.modifiedAt
+      },
+      ExpressionAttributeNames:{
+        "#desc": "desc"
       }
+      
     }).promise()
+
+    console.log('updated Item', {item: ItemId})
 
     return item
   }
