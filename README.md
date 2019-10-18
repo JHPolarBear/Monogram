@@ -1,5 +1,7 @@
 # Monogram
 
+This project is based on Udacity Chaptor4 serverless framework project.
+
 # Functionality of the application
 
 This app allows you to create / remove / update / fetch items including title, description and images. Each item can optionally update its title, description and image. Each user can only access items that they created.
@@ -52,9 +54,9 @@ return data looks like this:
 }
 ```
 
-* `CreateTodo` - should create a new TODO for a current user. A shape of data send by a client application to this function can be found in the `CreateTodoRequest.ts` file
+* `CreateTodo` - create a new item for a current user. A shape of data send by a client application to this function can be found in the `CreateItemRequest.ts` file
 
-It receives a new TODO item to be created in JSON format that looks like this:
+It receives a new item to be created in JSON format that looks like this:
 
 ```json
 {
