@@ -65,37 +65,30 @@ It should return a new TODO item that looks like this:
 ```json
 {
   "item": {
-    "todoId": "123",
-    "createdAt": "2019-07-27T20:01:45.424Z",
-    "name": "Buy milk",
-    "dueDate": "2019-07-29T20:01:45.424Z",
-    "done": false,
-    "attachmentUrl": "http://example.com/image.png"
+    "userId": "example-auth-01",
+    "createdAt": "2019-07-27T20:01:45.424Z",    
+    "modifiedAt": "2019-07-29T20:01:45.424Z",
+    "title": "my dog2",
+    "desc": "my dog desc",
+    "ImageUrl": "https://example.s3.amazonaws.com/example-item-id-3"
   }
 }
 ```
 
-* `UpdateTodo` - should update a TODO item created by a current user. A shape of data send by a client application to this function can be found in the `UpdateTodoRequest.ts` file
+* `UpdateTodo` - update a item created by a current user. A shape of data send by a client application to this function can be found in the `UpdateItemRequest.ts` file
 
-It receives an object that contains three fields that can be updated in a TODO item:
+It receives an object that contains two fields that can be updated in a TODO item:
 
 ```json
 {
-  "name": "Buy bread",
-  "dueDate": "2019-07-29T20:01:45.424Z",
-  "done": true
+  "title": "new cat",
+  "desc": "this is a new cat"
 }
 ```
 
-The id of an item that should be updated is passed as a URL parameter.
+* `DeleteTodo` - delete a item created by a current user. Expects an id of a item to remove.
 
-It should return an empty body.
-
-* `DeleteTodo` - should delete a TODO item created by a current user. Expects an id of a TODO item to remove.
-
-It should return an empty body.
-
-* `GenerateUploadUrl` - returns a pre-signed URL that can be used to upload an attachment file for a TODO item.
+* `GenerateUploadUrl` - returns a pre-signed URL that can be used to upload an attachment file for a item.
 
 It should return a JSON object that looks like this:
 
@@ -109,8 +102,7 @@ All functions are already connected to appropriate events from API Gateway.
 
 An id of a user can be extracted from a JWT token passed by a client.
 
-You also need to add any necessary resources to the `resources` section of the `serverless.yml` file such as DynamoDB table and S3 bucket.
-
+all necessary resources are added to the `resources` section of the `serverless.yml` file such as DynamoDB table and S3 bucket.
 
 # Frontend
 
