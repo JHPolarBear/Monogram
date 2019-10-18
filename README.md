@@ -117,6 +117,9 @@ cd backend
 npm install
 sls deploy -v
 ```
+This is the example page screenshot of deply result
+
+![Alt text](images/deploy_success.PNG?raw=true "deploy_success")
 
 ## Frontend
 
@@ -129,3 +132,29 @@ npm run start
 ```
 
 This starts a development server with the React application that will interact with the serverless application.
+
+### login page
+
+when access to localhost:3000, default login page shows up.
+
+![Alt text](images/client-login-page.PNG?raw=true "client-login-page")
+
+if click the login button, the page move to auth0 login page
+
+![Alt text](images/client-auth0-page.PNG?raw=true "client-auth0-page")
+
+### main page
+
+After login process user move to main page. On this page, users can see only the posts they posted.
+
+![Alt text](images/client-loginUser-Homepage.PNG?raw=true "client-loginUser-Homepage")
+
+The user can click the blue button to modify the post's content, and the red button to delete the post.
+
+When the blue button is pressed, the user will be redirected to the page below. After entering the changes, the user can press the upload button to complete the edit.
+
+![Alt text](images/update page.PNG?raw=true "update page")
+
+
+
+
