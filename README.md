@@ -2,52 +2,53 @@
 
 # Functionality of the application
 
-This app allows you to create / remove / update / fetch posts including title, description and images. Each post can optionally update its title, description and image. Each user can only access post items that they created.
+This app allows you to create / remove / update / fetch items including title, description and images. Each item can optionally update its title, description and image. Each user can only access items that they created.
 
-# TODO items
+# Platforms
 
-The application should store TODO items, and each TODO item contains the following fields:
+This app work based on serverless framework.
 
-* `todoId` (string) - a unique id for an item
+# items
+
+The application should store items, and each item contains the following fields:
+* `userId` (string) - a unique id to distinguish user
+* `itemId` (string) - a unique id for an item
 * `createdAt` (string) - date and time when an item was created
-* `name` (string) - name of a TODO item (e.g. "Change a light bulb")
-* `dueDate` (string) - date and time by which an item should be completed
-* `done` (boolean) - true if an item was completed, false otherwise
-* `attachmentUrl` (string) (optional) - a URL pointing to an image attached to a TODO item
+* `modifiedAt` (string) - date and time when an item was modified at last
+* `title` (string) - name of a item (e.g. "my dog")
+* `desc` (string) - description of the item
+* `ImageUrl` (string) - a URL pointing to an image attached to a item
 
-You might also store an id of a user who created a TODO item.
+# Functions
 
+* `Auth` - this function implement a custom authorizer for API Gateway that should be added to all other functions.
 
-# Functions to be implemented
+* `GetItems` - return all items for a current user. A user id can be extracted from a JWT token that is sent by the frontend
 
-To implement this project, you need to implement the following functions and configure them in the `serverless.yml` file:
-
-* `Auth` - this function should implement a custom authorizer for API Gateway that should be added to all other functions.
-
-* `GetTodos` - should return all TODOs for a current user. A user id can be extracted from a JWT token that is sent by the frontend
-
-It should return data that looks like this:
+return data looks like this:
 
 ```json
 {
-  "items": [
-    {
-      "todoId": "123",
-      "createdAt": "2019-07-27T20:01:45.424Z",
-      "name": "Buy milk",
-      "dueDate": "2019-07-29T20:01:45.424Z",
-      "done": false,
-      "attachmentUrl": "http://example.com/image.png"
-    },
-    {
-      "todoId": "456",
-      "createdAt": "2019-07-27T20:01:45.424Z",
-      "name": "Send a letter",
-      "dueDate": "2019-07-29T20:01:45.424Z",
-      "done": true,
-      "attachmentUrl": "http://example.com/image.png"
-    },
-  ]
+    "items": [
+        {
+            "modifiedAt": "2019-10-18T12:14:53.098Z",
+            "userId": "example-auth-01",
+            "ImageUrl": "https://example.s3.amazonaws.com/example-item-id-1",
+            "createdAt": "2019-10-18T12:14:53.098Z",
+            "itemId": "example-item-id-1",
+            "title": "my dog",
+            "desc": "my dog's face..."
+        },
+        {
+            "modifiedAt": "2019-10-18T12:15:24.460Z",
+            "userId": "example-auth-01",
+            "ImageUrl": "https://example.s3.amazonaws.com/example-item-id-2",
+            "createdAt": "2019-10-18T12:15:24.460Z",
+            "itemId": "example-item-id-2",
+            "title": "my cat",
+            "desc": "my cat when looking at me..."
+        }
+    ]
 }
 ```
 
