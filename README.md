@@ -155,6 +155,20 @@ When the blue button is pressed, the user will be redirected to the page below. 
 
 ![Alt text](images/update_page.PNG?raw=true "update_page")
 
+## AWS Service overview
+
+This application use several AWS Services below.
+
+- DynamoDB
+- S3 Bucket
+- CloudFormation
+- CloudWatch
+- lambda
+
+Captured images of each services overview are saved at /AWS_Component Folder
+
+AWS service capture 
+
 
 
 
