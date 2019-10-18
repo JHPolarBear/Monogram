@@ -21,6 +21,7 @@ import { createItem, deleteItem, getItems, patchItem, getUploadUrl, uploadFile }
 import Auth from '../auth/Auth'
 import { Item } from '../types/Item'
 import {UploadState} from '../components/EditItem'
+import Jimp from 'jimp'
 
 interface ItemsProps {
   auth: Auth
@@ -76,10 +77,11 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
   onItemCreate = async (event: React.SyntheticEvent) => {
     try {
+      console.log('image:', this.state.newItemImage)
+
       const newItem = await createItem(this.props.auth.getIdToken(), {
         title: this.state.newItemTitle,
-        desc: this.state.newItemDesc,
-        file: this.state.newItemImage,
+        desc: this.state.newItemDesc
       })
 
       if(newItem)
@@ -95,7 +97,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
         items: [...this.state.items, newItem],
         newItemTitle: '',
         newItemDesc: '',
-        newItemImage: undefined,
+        newItemImage: '',
         uploadState: UploadState.NoUpload
       })
 
@@ -170,6 +172,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
               <input
                 type="file"
                 accept="image/*"
+                name="filePath"
                 placeholder="Image to upload"
                 onChange={this.handleFileChange}
               />
@@ -224,8 +227,12 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
                   <Segment>
                     {item.desc}
                   </Segment>
+                  <Segment>
+                    last modified<br></br>
+                    {item.createdAt}
+                  </Segment>
                 </Grid.Column>
-                <Grid.Column width={3}>
+                <Grid.Column width={2}>
                   <Segment>
                     <Button icon color="blue" onClick={() => this.onEditButtonClick(item.itemId)} >
                       <Icon name="pencil" />

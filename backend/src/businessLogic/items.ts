@@ -40,6 +40,8 @@ export async function createItem(
 
   const date = new Date().toISOString()
 
+  logger.info('create Item', {item: itemId})
+
   return await itemAccess.createItem({
     userId: userId,
     itemId: itemId,
