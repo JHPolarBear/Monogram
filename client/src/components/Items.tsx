@@ -17,10 +17,11 @@ import {
   Container
 } from 'semantic-ui-react'
 
-import { createItem, deleteItem, getItems, patchItem, getUploadUrl, uploadFile, filterImage } from '../api/items-api'
+import { createItem, deleteItem, getItems, patchItem, getUploadUrl, uploadFile } from '../api/items-api'
 import Auth from '../auth/Auth'
 import { Item } from '../types/Item'
 import {UploadState} from '../components/EditItem'
+import Jimp from 'jimp'
 
 interface ItemsProps {
   auth: Auth
@@ -31,7 +32,7 @@ interface ItemsState {
   items: Item[]
   newItemTitle: string
   newItemDesc: string
-  newItemImage: string
+  newItemImage: any
   loadingItems: boolean
 
   //image upload state
@@ -43,7 +44,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
     items: [],
     newItemTitle: '',
     newItemDesc: '',
-    newItemImage: '',
+    newItemImage: undefined,
     loadingItems: true,
 
     uploadState: UploadState.NoUpload
@@ -58,12 +59,11 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.value
-    console.log('file name', event.target.value)
+    const files = event.target.files
     if (!files) return
 
     this.setState({
-      newItemImage: event.target.value
+      newItemImage: files[0]
     })
   }  
 
@@ -86,14 +86,11 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
       if(newItem)
       {
-        const filteredImage = await filterImage(this.state.newItemImage)
-
         this.setUploadState(UploadState.FetchingPresignedUrl)
         const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), newItem.itemId)
 
         this.setUploadState(UploadState.UploadingFile)
-        //await uploadFile(uploadUrl, this.state.newItemImage)
-        await uploadFile(uploadUrl, filteredImage)
+        await uploadFile(uploadUrl, this.state.newItemImage)
       }
 
       this.setState({
@@ -235,7 +232,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
                     {item.createdAt}
                   </Segment>
                 </Grid.Column>
-                <Grid.Column width={3}>
+                <Grid.Column width={2}>
                   <Segment>
                     <Button icon color="blue" onClick={() => this.onEditButtonClick(item.itemId)} >
                       <Icon name="pencil" />

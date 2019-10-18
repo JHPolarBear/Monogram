@@ -3,7 +3,6 @@ import { Item } from '../types/Item';
 import { CreateItemRequest } from '../types/CreateItmeRequest';
 import Axios from 'axios'
 import { UpdateItemRequest } from '../types/UpdateItemRequest';
-import Jimp from 'jimp'
 
 export async function getItems(idToken: string): Promise<Item[]> {
   console.log('Fetching items')
@@ -71,17 +70,4 @@ export async function getUploadUrl(
 
 export async function uploadFile(uploadUrl: string, file: Buffer): Promise<void> {
   await Axios.put(uploadUrl, file)
-}
-
-export async function filterImage(input:string): Promise<Buffer>{
-  return new Promise( async resolve => {
-    console.log('image read start')
-    const photo = await Jimp.read(input);
-    const outpath = '/tmp/filtered.'+Math.floor(Math.random() * 2000)+photo.getExtension();
-    await photo
-    .resize(256, 256) // resize
-    .quality(60) // set JPEG quality
-    .greyscale() // set greyscale
-    .getBufferAsync(photo.getExtension())
-  });
 }
