@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile } from '../api/items-api'
+import { getUploadUrl, uploadFile, updateItem } from '../api/items-api'
 import { string } from 'prop-types'
 
 export enum UploadState {
@@ -47,7 +47,7 @@ EditItemState
   }
 
   handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const _title = event.target.textContent
+    const _title = event.target.value
     if (!_title) return
 
     this.setState({
@@ -56,7 +56,7 @@ EditItemState
   }
   
   handleDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const _desc = event.target.textContent
+    const _desc = event.target.value
     if (!_desc) return
 
     this.setState({
@@ -68,20 +68,26 @@ EditItemState
     event.preventDefault()
 
     try {
+      
+      console.log('update item id:', this.props.match.params.itemId)
 
-      // only check the file
-      if (!this.state.file) {
-        alert('File should be selected')
-        return
-      }
+      const newItem = await updateItem(this.props.auth.getIdToken(), this.props.match.params.itemId, {
+        title: this.state.title,
+        desc: this.state.desc
+      })
 
-      this.setUploadState(UploadState.FetchingPresignedUrl)
-      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.itemId)
+      if(this.state.file)
+      {
+        this.setUploadState(UploadState.FetchingPresignedUrl)
+        const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.itemId)
+  
+        this.setUploadState(UploadState.UploadingFile)
+        await uploadFile(uploadUrl, this.state.file)
 
-      this.setUploadState(UploadState.UploadingFile)
-      await uploadFile(uploadUrl, this.state.file)
+        console.log('upload item fin')
+      }     
 
-      alert('File was uploaded!')
+      alert('Post was updated!')
     } catch (e) {
       alert('Could not upload a file: ' + e.message)
     } finally {
@@ -98,7 +104,7 @@ EditItemState
   render() {
     return (
       <div>
-        <h1>Upload new image</h1>
+        <h1>Update Post</h1>
 
         <Form onSubmit={this.handleSubmit}>
         <Form.Field>
@@ -117,7 +123,7 @@ EditItemState
               onChange={this.handleDescChange}
             />
           </Form.Field>
-          <Form.Field>
+          {/* <Form.Field>
             <label>File</label>
             <input
               type="file"
@@ -125,7 +131,7 @@ EditItemState
               placeholder="Image to upload"
               onChange={this.handleFileChange}
             />
-          </Form.Field>
+          </Form.Field> */}
 
           {this.renderButton()}
         </Form>

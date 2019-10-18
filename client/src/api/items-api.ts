@@ -27,20 +27,27 @@ export async function createItem(
       'Authorization': `Bearer ${idToken}`
     }
   })
+
+  console.log(response.data.item)
+
   return response.data.item
 }
 
-export async function patchItem(
+export async function updateItem(
   idToken: string,
   itemId: string,
   updatedItem: UpdateItemRequest
-): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/items/${itemId}`, JSON.stringify(updatedItem), {
+): Promise<Item> {
+  const response = await Axios.put(`${apiEndpoint}/items/${itemId}`, JSON.stringify(updatedItem), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     }
   })
+
+  console.log(response.data.item)
+
+  return response.data.item
 }
 
 export async function deleteItem(

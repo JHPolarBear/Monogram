@@ -1,5 +1,4 @@
 export interface UpdateItemRequest {
-  name: string
-  dueDate: string
-  done: boolean
+  title: string
+  desc: string
 }
