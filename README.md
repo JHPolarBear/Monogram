@@ -60,7 +60,7 @@ It receives a new item to be created in a format that looks like this:
 
 ![Alt text](images/upload_form.PNG?raw=true "upload form")
 
-It shows fail alert if title is empty (validte with 'serverless-reqvalidator-plugin')
+app shows fail alert when the title is empty (validte with 'serverless-reqvalidator-plugin')
 
 It should return a new item that looks like this:
 
