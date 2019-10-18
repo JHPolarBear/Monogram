@@ -56,17 +56,9 @@ return data looks like this:
 
 * `CreateTodo` - create a new item for a current user. A shape of data send by a client application to this function can be found in the `CreateItemRequest.ts` file
 
-It receives a new item to be created in JSON format that looks like this:
+It receives a new item to be created in a format that looks like this:
 
-```json
-{
-  "createdAt": "2019-07-27T20:01:45.424Z",
-  "name": "Buy milk",
-  "dueDate": "2019-07-29T20:01:45.424Z",
-  "done": false,
-  "attachmentUrl": "http://example.com/image.png"
-}
-```
+![Alt text](images/upload_form.PNG?raw=true "upload form")
 
 It should return a new TODO item that looks like this:
 
