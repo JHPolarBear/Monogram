@@ -153,7 +153,7 @@ The user can click the blue button to modify the post's content, and the red but
 
 When the blue button is pressed, the user will be redirected to the page below. After entering the changes, the user can press the upload button to complete the edit.
 
-![Alt text](images/update page.PNG?raw=true "update page")
+![Alt text](images/update_page.PNG?raw=true "update_page")
 
 
 
