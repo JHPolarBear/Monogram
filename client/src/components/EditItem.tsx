@@ -104,7 +104,7 @@ EditItemState
   render() {
     return (
       <div>
-        <h1>Upload new image</h1>
+        <h1>Update Post</h1>
 
         <Form onSubmit={this.handleSubmit}>
         <Form.Field>
@@ -123,7 +123,7 @@ EditItemState
               onChange={this.handleDescChange}
             />
           </Form.Field>
-          <Form.Field>
+          {/* <Form.Field>
             <label>File</label>
             <input
               type="file"
@@ -131,7 +131,7 @@ EditItemState
               placeholder="Image to upload"
               onChange={this.handleFileChange}
             />
-          </Form.Field>
+          </Form.Field> */}
 
           {this.renderButton()}
         </Form>
