@@ -17,7 +17,7 @@ import {
   Container
 } from 'semantic-ui-react'
 
-import { createItem, deleteItem, getItems, patchItem, getUploadUrl, uploadFile } from '../api/items-api'
+import { createItem, deleteItem, getItems, updateItem, getUploadUrl, uploadFile } from '../api/items-api'
 import Auth from '../auth/Auth'
 import { Item } from '../types/Item'
 import {UploadState} from '../components/EditItem'
@@ -105,7 +105,7 @@ export class Items extends React.PureComponent<ItemsProps, ItemsState> {
 
       alert('Item was uploaded!')
 
-    } catch {
+    } catch(e) {
       alert('Item creation failed')
     }
   }
