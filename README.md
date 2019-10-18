@@ -77,7 +77,7 @@ It should return a new item that looks like this:
 }
 ```
 
-* `UpdateTodo` - update a item created by a current user. A shape of data send by a client application to this function can be found in the `UpdateItemRequest.ts` file
+* `UpdateTodo` - update title and description of the item created by a current user. A shape of data send by a client application to this function can be found in the `UpdateItemRequest.ts` file
 
 It receives an object that contains two fields that can be updated in a TODO item:
 
